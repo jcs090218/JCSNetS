@@ -31,7 +31,8 @@ public class JCSNetS_PacketDecoder extends CumulativeProtocolDecoder {
     @Override
     protected boolean doDecode(IoSession session, IoBuffer in,
             ProtocolDecoderOutput out) throws Exception {
-log.info("解碼前：" + in.toString());
+        
+        log.info("解碼前：" + in.toString());
 
         // Check packet length
         int packetLength = in.remaining();

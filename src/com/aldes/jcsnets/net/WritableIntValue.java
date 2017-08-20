@@ -14,8 +14,7 @@ package com.aldes.jcsnets.net;
  * @inter WritableIntValueHolder
  * @breif
  */
-public interface WritableIntValueHolder extends IntValueHolder {
-    public void setValue(int newval);
-
-    int getValue();
+public interface WritableIntValue {
+    public void setValue(short newval);
+    public short getValue();
 }

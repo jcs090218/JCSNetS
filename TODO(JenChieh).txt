@@ -8,3 +8,4 @@
 
 
 //-- General --//
+Handle Little Endianness and Big Endianness.

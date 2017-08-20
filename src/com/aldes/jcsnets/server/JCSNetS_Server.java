@@ -28,9 +28,7 @@ import com.aldes.jcsnets.net.mina.JCSNetS_CodecFactory;
 public class JCSNetS_Server implements Runnable {
     
     private static Logger log = LoggerFactory.getLogger(JCSNetS_Server.class);
-    private static final int PORT = 5454;
     private PacketProcessor processor;  // singleton
-    
     
     @Override
     public void run() {
@@ -51,8 +49,10 @@ public class JCSNetS_Server implements Runnable {
             
             acceptor.setHandler(new JCSNetS_ServerHandler(processor));
             
-            acceptor.bind(new InetSocketAddress(PORT));
-            log.info("服務端起動成功... 端口號為: " + PORT);
+            int port = Integer.parseInt(ServerProperties.getProperty("jcs.Port"));
+            
+            acceptor.bind(new InetSocketAddress(port));
+            log.info("服務端起動成功... 端口號為: " + port);
             
         }catch(Exception e){
             log.error("服務端異常...", e);

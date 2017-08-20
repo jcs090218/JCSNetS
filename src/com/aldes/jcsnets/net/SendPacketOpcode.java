@@ -8,30 +8,19 @@ import java.util.Properties;
 import com.aldes.jcsnets.handling.ExternalCodeTableGetter;
 import com.aldes.jcsnets.handling.WritableIntValueHolder;
 
-
-/**
- * @enum RecvPacketOpcode
- * @brief 
- *
- */
-public enum RecvPacketOpcode implements WritableIntValueHolder {
-    // GENERIC
-    PONG, 
+public enum SendPacketOpcode implements WritableIntValueHolder {
+    // GENERAL
+    PING,
     
     // LOGIN
-    REGISTER_LOGIN,
-    DEREGISTER_LOGIN,
-    CREATE_CHARACTER,
+    LOGIN_STATUS,
     
     // CHANNEL
-    MOVE_PLAYER,
-    SHOOT_BULLET,
-    USE_ITEM,
-    KILL_MONSTER
     ;
-
+    
     private short code = -2;
-
+    
+    @Override
     public void setValue(short code) {
         this.code = code;
     }
@@ -43,19 +32,21 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
 
     public static Properties getDefaultProperties() throws FileNotFoundException, IOException {
         Properties props = new Properties();
-        FileInputStream fis = new FileInputStream("recvops.properties");
-        props.load(fis);
-        fis.close();
+        FileInputStream fileInputStream = new FileInputStream("sendops.properties");
+        props.load(fileInputStream);
+        fileInputStream.close();
         return props;
     }
 
-
     static {
+        reloadValues();
+    }
+
+    public static final void reloadValues() {
         try {
             ExternalCodeTableGetter.populateValues(getDefaultProperties(), values());
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load recvops", e);
+            throw new RuntimeException("Failed to load sendops", e);
         }
     }
-
 }

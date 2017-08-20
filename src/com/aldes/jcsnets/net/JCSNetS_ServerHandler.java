@@ -1,5 +1,7 @@
 package com.aldes.jcsnets.net;
 
+import java.util.Collection;
+
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
@@ -9,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import com.aldes.jcsnets.client.JCSNetS_Client;
 import com.aldes.jcsnets.server.JCSNetS_LoginServer;
 import com.aldes.jcsnets.tools.JCSNetS_PacketCreator;
+import com.aldes.jcsnets.tools.data.input.ByteArrayByteStream;
+import com.aldes.jcsnets.tools.data.input.GenericSeekableLittleEndianAccessor;
+import com.aldes.jcsnets.tools.data.input.SeekableLittleEndianAccessor;
 
 /**
  * $File: JCSNetS_ServerHandler.java $
@@ -31,6 +36,9 @@ public class JCSNetS_ServerHandler extends IoHandlerAdapter {
     private final static short BLACKVAULT_VERSION = 1;
     private PacketProcessor processor;
     private int channel = -1;
+    
+    // connection list pointer.
+    private Collection<IoSession> allSessions = null;
     
     public JCSNetS_ServerHandler(PacketProcessor processor) {
         this.processor = processor;
@@ -69,6 +77,8 @@ public class JCSNetS_ServerHandler extends IoHandlerAdapter {
         byte[] buffer = JCSNetS_PacketCreator.getHello();
         
         session.write(buffer);      // send the index to client
+        
+        updateConnections(session);
     }
 
     @Override
@@ -84,38 +94,28 @@ public class JCSNetS_ServerHandler extends IoHandlerAdapter {
         }
         super.sessionClosed(session);
         
+        updateConnections(session);
+        
         log.info("客戶端已經關閉連結...");
     }
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
+        
         byte[] content = (byte[]) message;
         
-//      for(int i = 0; i < content.length; ++i)
-//          log.info("服務端接收到的數據為: " + (char)content[i]);
+        SeekableLittleEndianAccessor slea = new GenericSeekableLittleEndianAccessor(new ByteArrayByteStream(content));
+        short packetId = slea.readShort();
+        JCSNetS_Client client = (JCSNetS_Client) session.getAttribute(JCSNetS_Client.CLIENT_KEY);
+        JCSNetS_PacketHandler packetHandler = processor.getHandler(packetId);
         
-        session.write(content);
-        
-//        SeekableLittleEndianAccessor slea = new GenericSeekableLittleEndianAccessor(new ByteArrayByteStream(content));
-//        short packetId = slea.readShort();
-//        BlackVaultClient client = (BlackVaultClient) session.getAttribute(BlackVaultClient.CLIENT_KEY);
-//        BlackVaultPacketHandler packetHandler = processor.getHandler(packetId);
-//
-//        if (packetHandler != null && packetHandler.validateState(client)) {
-//            try {
-//              // handle pack here
-//                packetHandler.handlePacket(slea, client);
-//            } catch (Throwable t) {
-//                System.out.println("Exception during processing packet: " + packetHandler.getClass().getName() + ": " + t.getMessage());
-//            }
-//        }        
-        
-        
-//      // 不做任何更改, 直接傳送回給所有客戶端!
-//      Collection<IoSession> sessions = session.getService().getManagedSessions().values();
-//      for (IoSession ss : sessions) {
-//          ss.write(content);
-//      }
+        if (packetHandler != null && packetHandler.validateState(client)) {
+            try {
+                packetHandler.handlePacket(slea, client);
+            } catch (Throwable t) {
+                System.out.println("Exception during processing packet: " + packetHandler.getClass().getName() + ": " + t.getMessage());
+            }
+        }
         
     }
 
@@ -131,6 +131,10 @@ public class JCSNetS_ServerHandler extends IoHandlerAdapter {
         super.sessionIdle(session, status);
         
         log.info("服務端進入閒空狀態...");
+    }
+    
+    private void updateConnections(IoSession session) {
+        this.allSessions = session.getService().getManagedSessions().values();
     }
     
 }

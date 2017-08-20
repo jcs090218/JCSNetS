@@ -28,8 +28,7 @@ public class JCSNetS_PacketCreator {
     private static Logger log = LoggerFactory.getLogger(JCSNetS_PacketCreator.class);
     private final static byte[] CHAR_INFO_MAGIC = new byte[]{(byte) 0xff, (byte) 0xc9, (byte) 0x9a, 0x3b};
     private final static byte[] ITEM_MAGIC = new byte[]{(byte) 0x80, 5};
-    private final static long FT_UT_OFFSET = 116444592000000000L; // EDT
-    //protected BlackVaultCharacter[] visitors = new BlackVaultCharacter[3];
+    private final static long FT_UT_OFFSET = 116444592000000000L;  // EDT
     private static Random rand = new Random();
 
 
@@ -49,9 +48,9 @@ public class JCSNetS_PacketCreator {
      * @return The packet.
      */
     public static JCSNetS_Packet getPing() {
-        //BlackVaultPacketLittleEndianWriter bvlew = new BlackVaultPacketLittleEndianWriter(16);
+        //JCSNetS_PacketLittleEndianWriter jcslew = new JCSNetS_PacketLittleEndianWriter(16);
 
-        //bvlew.writeShort(SendPacketOpcode.PING.getValue());
+        //jcslew.writeShort(SendPacketOpcode.PING.getValue());
 
         //return bvlew.getPacket();
         return null;
