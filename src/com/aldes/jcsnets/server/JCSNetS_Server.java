@@ -28,7 +28,13 @@ import com.aldes.jcsnets.net.mina.JCSNetS_CodecFactory;
 public class JCSNetS_Server implements Runnable {
     
     private static Logger log = LoggerFactory.getLogger(JCSNetS_Server.class);
-    private PacketProcessor processor;  // singleton
+    private PacketProcessor processor = null;  // singleton
+    private PacketProcessor.Mode packetMode = null;
+    
+    public JCSNetS_Server(PacketProcessor.Mode packetMode) {
+        this.packetMode = packetMode;
+        this.processor = PacketProcessor.getProcessor(packetMode);
+    }
     
     @Override
     public void run() {
@@ -49,7 +55,13 @@ public class JCSNetS_Server implements Runnable {
             
             acceptor.setHandler(new JCSNetS_ServerHandler(processor));
             
-            int port = Integer.parseInt(ServerProperties.getProperty("jcs.Port"));
+            
+            int port = 8585;
+            if (PacketProcessor.Mode.CHANNELSERVER == packetMode) {
+                port = Integer.parseInt(ServerProperties.getProperty("jcs.Port"));
+            } else if (PacketProcessor.Mode.LOGINSERVER == packetMode) {
+                port = Integer.parseInt(ServerProperties.getProperty("jcs.LPort"));
+            }
             
             acceptor.bind(new InetSocketAddress(port));
             log.info("服務端起動成功... 端口號為: " + port);

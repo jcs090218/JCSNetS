@@ -66,6 +66,9 @@ public class JCSNetS_PacketDecoder extends CumulativeProtocolDecoder {
                 ++index) {
             decryptedPacket[index] = undecryptedPacket[index + JCSNetS_PacketKey.DECODE_KEY_LEN];
         }
+        
+        // IMPORTANT(jenchieh): Check the client are good client not 
+        // something else here!!
 
         // 交由handler處理
         out.write(decryptedPacket);

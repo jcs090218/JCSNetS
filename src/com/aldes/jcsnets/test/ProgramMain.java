@@ -1,6 +1,7 @@
 package com.aldes.jcsnets.test;
 
 import com.aldes.jcsnets.net.JCSNetS_PacketKey;
+import com.aldes.jcsnets.net.PacketProcessor;
 import com.aldes.jcsnets.server.JCSNetS_Server;
 import com.aldes.jcsnets.server.ServerProperties;
 
@@ -19,9 +20,6 @@ import com.aldes.jcsnets.server.ServerProperties;
  * @brief Test Program Entry.
  */
 public class ProgramMain {
-    
-    public static JCSNetS_Server JCSNETS_SERVER = null;
-    
     private static String GAME_NAME = "JCSNetS";
     private static String SERVER_VERSION = "1.0.0";
     private static String HOST_INC = "JayCeS";
@@ -40,8 +38,13 @@ public class ProgramMain {
         
         JCSNetS_PacketKey.getInstance();
         
-        JCSNETS_SERVER = new JCSNetS_Server();
-        JCSNETS_SERVER.run();
+        /* Run Channel Server. */
+        JCSNetS_Server channleServer = new JCSNetS_Server(PacketProcessor.Mode.CHANNELSERVER);
+        channleServer.run();
+        
+        /* Run Login Server. */
+        JCSNetS_Server login = new JCSNetS_Server(PacketProcessor.Mode.LOGINSERVER);
+        login.run();
     }
     
 }

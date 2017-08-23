@@ -1,6 +1,7 @@
 package com.aldes.jcsnets.tools.data.input;
 
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 
 /**
  * $File: GenericLittleEndianAccessor.java $
@@ -168,16 +169,118 @@ public class GenericLittleEndianAccessor implements LittleEndianAccessor {
     }
 
     /**
-     * Reads a MapleStory convention lengthed ASCII string.
+     * Reads a JCSNetS convention lengthed ASCII string.
      * This consists of a short integer telling the length of the string,
      * then the string itself.
      *
      * @return The string read.
      */
     @Override
-    public String readMapleAsciiString() {
+    public String readJCSNetSAsciiString() {
         return readAsciiString(readShort());
     }
+    
+    /**
+     * Read char in sequence until terminated character appear.
+     * 
+     * @return The string read.
+     */
+    @Override
+    public String readNullTerminatedUnicodeString() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        
+        byte b = 1;
+        while (b != 0) {
+            b = readByte();
+            baos.write(b);
+        }
+        
+        byte[] buf = baos.toByteArray();
+        String strBuf = null;
+        try {
+            strBuf = new String(buf, "Unicode");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        
+        return strBuf;
+    }
+    
+    /**
+     * Read char in sequence until terminated character appear.
+     * 
+     * @return The string read.
+     */
+    @Override
+    public String readNullTerminatedUTF8String() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte b = 1;
+        while (b != 0) {
+            b = readByte();
+            baos.write(b);
+        }
+        
+        byte[] buf = baos.toByteArray();
+        String strBuf = null;
+        try {
+            strBuf = new String(buf, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        
+        return strBuf;
+    }
+    
+    /**
+     * Read char in sequence until terminated character appear.
+     * 
+     * @return The string read.
+     */
+    @Override
+    public String readNullTerminatedUTF16String() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte b = 1;
+        while (b != 0) {
+            b = readByte();
+            baos.write(b);
+        }
+        
+        byte[] buf = baos.toByteArray();
+        String strBuf = null;
+        try {
+            strBuf = new String(buf, "UTF-16");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        
+        return strBuf;
+    }
+    
+    /**
+     * Read char in sequence until terminated character appear.
+     * 
+     * @return The string read.
+     */
+    @Override
+    public String readNullTerminatedUTF32String() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte b = 1;
+        while (b != 0) {
+            b = readByte();
+            baos.write(b);
+        }
+        
+        byte[] buf = baos.toByteArray();
+        String strBuf = null;
+        try {
+            strBuf = new String(buf, "UTF-32");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        
+        return strBuf;
+    }
+
 
     /**
      * Reads <code>num</code> bytes off the stream.

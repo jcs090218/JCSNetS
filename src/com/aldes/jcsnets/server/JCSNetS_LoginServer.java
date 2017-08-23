@@ -28,8 +28,7 @@ public class JCSNetS_LoginServer {
 
     private static ArrayList<JCSNetS_Client> clients = new ArrayList<JCSNetS_Client>();
 
-
-
+    
     private JCSNetS_LoginServer() {
 
     }
@@ -39,7 +38,6 @@ public class JCSNetS_LoginServer {
             instance = new JCSNetS_LoginServer();
         return instance;
     }
-
 
     public void resgister(JCSNetS_Client client) {
         clients.add(client);

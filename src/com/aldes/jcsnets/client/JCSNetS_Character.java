@@ -23,10 +23,12 @@ public class JCSNetS_Character {
     private int mapid;
     private Vector2f position = new Vector2f();
     private JCSNetS_Map map = null;
+    
+    private JCSNetS_Client client = null;
 
 
-    public JCSNetS_Character() {
-
+    public JCSNetS_Character(JCSNetS_Client client) {
+        this.client = client;
     }
 
     public JCSNetS_Map getMap() {
@@ -64,6 +66,10 @@ public class JCSNetS_Character {
 
     public int getMapid() {
         return this.mapid;
+    }
+    
+    public JCSNetS_Client getClient() {
+        return this.client;
     }
 
 }

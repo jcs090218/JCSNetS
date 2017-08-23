@@ -85,11 +85,35 @@ public interface LittleEndianAccessor {
      */
     String readNullTerminatedAsciiString();
     /**
-     * Reads a MapleStory convention lengthed ASCII string.
+     * Reads a JCSNetS convention length ASCII string.
      *
      * @return The string read.
      */
-    String readMapleAsciiString();
+    String readJCSNetSAsciiString();
+    /**
+     * Read char in sequence until terminated character appear.
+     * 
+     * @return The string read.
+     */
+    String readNullTerminatedUnicodeString();
+    /**
+     * Read char in sequence until terminated character appear.
+     * 
+     * @return The string read.
+     */
+    String readNullTerminatedUTF8String();
+    /**
+     * Read char in sequence until terminated character appear.
+     * 
+     * @return The string read.
+     */
+    String readNullTerminatedUTF16String();
+    /**
+     * Read char in sequence until terminated character appear.
+     * 
+     * @return The string read.
+     */
+    String readNullTerminatedUTF32String();
 
     /**
      * Gets the number of bytes read so far.

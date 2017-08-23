@@ -2,12 +2,13 @@ package com.aldes.jcsnets.tools;
 
 import java.util.Random;
 
-import org.apache.mina.core.buffer.IoBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aldes.jcsnets.net.JCSNetS_Packet;
+import com.aldes.jcsnets.net.SendPacketOpcode;
 import com.aldes.jcsnets.server.JCSNetS_LoginServer;
+import com.aldes.jcsnets.tools.data.output.JCSNetS_PacketLittleEndianWriter;
 
 /**
  * $File: JCSNetS_PacketCreator.java $
@@ -48,32 +49,28 @@ public class JCSNetS_PacketCreator {
      * @return The packet.
      */
     public static JCSNetS_Packet getPing() {
-        //JCSNetS_PacketLittleEndianWriter jcslew = new JCSNetS_PacketLittleEndianWriter(16);
+        JCSNetS_PacketLittleEndianWriter jcslew = new JCSNetS_PacketLittleEndianWriter(16);
 
-        //jcslew.writeShort(SendPacketOpcode.PING.getValue());
+        jcslew.writeShort(SendPacketOpcode.PING.getValue());
 
-        //return bvlew.getPacket();
-        return null;
+        return jcslew.getPacket();
     }
 
     /**
      * Get hello packat.
-     * @return byte[] : hello buffer
+     * @return JCSNetS_Packet : hello packet.
      */
-    public static byte[] getHello() {
-        IoBuffer buf = IoBuffer.allocate(2);
-        buf.setAutoExpand(true);
+    public static JCSNetS_Packet getHello() {
+        JCSNetS_PacketLittleEndianWriter jcslew = new JCSNetS_PacketLittleEndianWriter(16);
 
         // set header
-        buf.putShort((short)10);
-        buf.putShort((short) 0x10);
-
+        jcslew.writeShort(0x10);
 
         // set data
         long len = JCSNetS_LoginServer.getClients().size();
-        //buf.putLong(len);
+        jcslew.writeLong(len);
 
-        return buf.array();
+        return jcslew.getPacket();
     }
 
 }

@@ -33,10 +33,11 @@ public class JCSNetS_ServerHandler extends IoHandlerAdapter {
     
     private static Logger log = LoggerFactory.getLogger(JCSNetS_ServerHandler.class);
     
-    private final static short BLACKVAULT_VERSION = 1;
+    private final static short JCSNetS_VERSION = 1;
     private PacketProcessor processor;
     private int channel = -1;
     
+    // TODO: Make player cache server instead.
     // connection list pointer.
     private Collection<IoSession> allSessions = null;
     
@@ -51,7 +52,7 @@ public class JCSNetS_ServerHandler extends IoHandlerAdapter {
     
     @Override
     public void messageSent(IoSession session, Object message) throws Exception {
-//        Runnable r = ((BlackVaultPacket) message).getOnSend();
+//        Runnable r = ((JCSNetS_Packet) message).getOnSend();
 //        if (r != null) {
 //            r.run();
 //        }
@@ -68,17 +69,15 @@ public class JCSNetS_ServerHandler extends IoHandlerAdapter {
         log.info("服務端與客戶端連接打開...");
         log.info("IoSession with {} opened", session.getRemoteAddress());
         
-        // [IMPORTATN] Check the client are good client not something else here!!
+        JCSNetS_Client client = new JCSNetS_Client(session);
+        session.setAttribute(JCSNetS_Client.CLIENT_KEY, client);
         
-        JCSNetS_Client client = new JCSNetS_Client();
-        client.setSession(session);
-        JCSNetS_LoginServer.getClients().add(client);
+        JCSNetS_LoginServer.getInstance().resgister(client);
         
-        byte[] buffer = JCSNetS_PacketCreator.getHello();
+        updatePlayerCache(session);
         
-        session.write(buffer);      // send the index to client
-        
-        updateConnections(session);
+        JCSNetS_Packet buffer = JCSNetS_PacketCreator.getHello();
+        session.write(buffer.getBytes());      // send the index to client
     }
 
     @Override
@@ -94,14 +93,13 @@ public class JCSNetS_ServerHandler extends IoHandlerAdapter {
         }
         super.sessionClosed(session);
         
-        updateConnections(session);
+        updatePlayerCache(session);
         
         log.info("客戶端已經關閉連結...");
     }
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
-        
         byte[] content = (byte[]) message;
         
         SeekableLittleEndianAccessor slea = new GenericSeekableLittleEndianAccessor(new ByteArrayByteStream(content));
@@ -133,7 +131,12 @@ public class JCSNetS_ServerHandler extends IoHandlerAdapter {
         log.info("服務端進入閒空狀態...");
     }
     
-    private void updateConnections(IoSession session) {
+    /**
+     * Update the player cache every time we connect a new client or 
+     * disconnect from the client.
+     * @param session : session we use to update.
+     */
+    private void updatePlayerCache(IoSession session) {
         this.allSessions = session.getService().getManagedSessions().values();
     }
     
