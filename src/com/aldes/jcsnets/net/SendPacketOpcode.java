@@ -16,6 +16,8 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     LOGIN_STATUS,
     
     // CHANNEL
+    CHANGE_CHANNEL,
+    MOVE_PLAYER
     ;
     
     private short code = -2;

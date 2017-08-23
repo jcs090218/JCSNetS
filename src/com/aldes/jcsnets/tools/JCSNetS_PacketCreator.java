@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aldes.jcsnets.net.JCSNetS_Packet;
 import com.aldes.jcsnets.net.SendPacketOpcode;
-import com.aldes.jcsnets.server.JCSNetS_LoginServer;
+import com.aldes.jcsnets.net.login.JCSNetS_LoginServer;
 import com.aldes.jcsnets.tools.data.output.JCSNetS_PacketLittleEndianWriter;
 
 /**

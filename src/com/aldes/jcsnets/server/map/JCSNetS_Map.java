@@ -20,12 +20,14 @@ public class JCSNetS_Map {
     private int mapid;
     private String mapName;
     private String streetName;
+    private int channel = -1;
     
     private LinkedHashSet<JCSNetS_Character> characters = new LinkedHashSet<JCSNetS_Character>();
 
 
-    public JCSNetS_Map() {
-
+    public JCSNetS_Map(int mapid, int channel) {
+        this.mapid = mapid;
+        this.channel = channel;
     }
     
     public void broadcastMessage(JCSNetS_Packet packet) {

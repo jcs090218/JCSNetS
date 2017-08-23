@@ -14,13 +14,14 @@ import org.slf4j.LoggerFactory;
 import com.aldes.jcsnets.net.JCSNetS_ServerHandler;
 import com.aldes.jcsnets.net.PacketProcessor;
 import com.aldes.jcsnets.net.mina.JCSNetS_CodecFactory;
+import com.aldes.jcsnets.util.JCSNetS_Logger;
 
 /**
  * $File: JCSNetS_Server.java $
- * $Date: 2017-03-27 23:33:45 $
+ * $Date: 2017-08-23 16:31:45 $
  * $Revision: $
  * $Creator: Jen-Chieh Shen $
- * $Notice: See LICENSE.txt for modification and distribution information
+ * $Notice: See LICENSE.txt for modification and distribution information 
  *                   Copyright (c) 2017 by Shen, Jen-Chieh $
  */
 
@@ -28,14 +29,42 @@ import com.aldes.jcsnets.net.mina.JCSNetS_CodecFactory;
 public class JCSNetS_Server implements Runnable {
     
     private static Logger log = LoggerFactory.getLogger(JCSNetS_Server.class);
-    private PacketProcessor processor = null;  // singleton
-    private PacketProcessor.Mode packetMode = null;
     
-    public JCSNetS_Server(PacketProcessor.Mode packetMode) {
-        this.packetMode = packetMode;
-        this.processor = PacketProcessor.getProcessor(packetMode);
+    private PacketProcessor processor = null;  // singleton
+    private PacketProcessor.Mode mode = null;
+    private int channel = -1;
+    
+    // default port
+    private int port = 8585;
+    
+    
+    public JCSNetS_Server(int port, PacketProcessor.Mode mode) {
+        setPacketProcessorMode(mode);
+        setPort(port);
+        
+        if (mode == PacketProcessor.Mode.LOGINSERVER) {
+            this.channel = port - Integer.parseInt(ServerProperties.getProperty("jcs.LPort")) + 1;
+        } else if (mode == PacketProcessor.Mode.CHANNELSERVER) {
+            this.channel = port - Integer.parseInt(ServerProperties.getProperty("jcs.Port")) + 1;
+        }
     }
     
+    protected void printConnectInfo(int port) {
+        if (mode == PacketProcessor.Mode.LOGINSERVER) {
+            JCSNetS_Logger.println("Login   " + channel + ": Listening on port " + port + "");
+        } else if (mode == PacketProcessor.Mode.CHANNELSERVER) {
+            JCSNetS_Logger.println("Channel " + channel + ": Listening on port " + port + "");
+        }
+    }
+    
+    protected void printConnectError(Exception e) {
+        if (mode == PacketProcessor.Mode.LOGINSERVER) {
+            JCSNetS_Logger.println("服務端異常..." + e);
+        } else if (mode == PacketProcessor.Mode.CHANNELSERVER) {
+            JCSNetS_Logger.println("Binding to port " + port + " failed (ch: " + getChannel() + ")" + e);
+        }
+    }
+
     @Override
     public void run() {
         IoAcceptor acceptor;
@@ -55,22 +84,25 @@ public class JCSNetS_Server implements Runnable {
             
             acceptor.setHandler(new JCSNetS_ServerHandler(processor));
             
-            
-            int port = 8585;
-            if (PacketProcessor.Mode.CHANNELSERVER == packetMode) {
-                port = Integer.parseInt(ServerProperties.getProperty("jcs.Port"));
-            } else if (PacketProcessor.Mode.LOGINSERVER == packetMode) {
-                port = Integer.parseInt(ServerProperties.getProperty("jcs.LPort"));
-            }
-            
             acceptor.bind(new InetSocketAddress(port));
-            log.info("服務端起動成功... 端口號為: " + port);
+            printConnectInfo(port);
             
         }catch(Exception e){
-            log.error("服務端異常...", e);
+            printConnectError(e);
             e.printStackTrace();
         }
     }
     
+    public void setPacketProcessorMode(PacketProcessor.Mode mode) {
+        this.mode = mode;
+    }
+    
+    public void setPort(int port) {
+        this.port = port;
+    }
+    
+    public int getChannel() {
+        return this.channel;
+    }
+    
 }
-

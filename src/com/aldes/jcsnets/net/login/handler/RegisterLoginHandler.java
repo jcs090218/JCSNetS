@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aldes.jcsnets.client.JCSNetS_Client;
 import com.aldes.jcsnets.net.AbstractJCSNetS_PacketHandler;
-import com.aldes.jcsnets.server.JCSNetS_LoginServer;
+import com.aldes.jcsnets.net.login.JCSNetS_LoginServer;
 import com.aldes.jcsnets.tools.data.input.SeekableLittleEndianAccessor;
 
 

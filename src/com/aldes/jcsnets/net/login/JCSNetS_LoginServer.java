@@ -1,8 +1,11 @@
-package com.aldes.jcsnets.server;
+package com.aldes.jcsnets.net.login;
 
 import java.util.ArrayList;
 
 import com.aldes.jcsnets.client.JCSNetS_Client;
+import com.aldes.jcsnets.net.PacketProcessor;
+import com.aldes.jcsnets.server.JCSNetS_Server;
+import com.aldes.jcsnets.server.ServerProperties;
 
 /**
  * $File: JCSNetS_LoginServer.java $
@@ -22,20 +25,21 @@ import com.aldes.jcsnets.client.JCSNetS_Client;
  *
  * @author JenChieh(jcs090218@gmail.com)
  */
-public class JCSNetS_LoginServer {
+public class JCSNetS_LoginServer extends JCSNetS_Server {
 
     private static JCSNetS_LoginServer instance = null;
-
     private static ArrayList<JCSNetS_Client> clients = new ArrayList<JCSNetS_Client>();
 
-    
+
     private JCSNetS_LoginServer() {
-
+        super(Integer.parseInt(ServerProperties.getProperty("jcs.LPort")), PacketProcessor.Mode.LOGINSERVER);
     }
-
+    
     public static JCSNetS_LoginServer getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new JCSNetS_LoginServer();
+            instance.run();
+        }
         return instance;
     }
 

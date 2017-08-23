@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aldes.jcsnets.client.JCSNetS_Client;
-import com.aldes.jcsnets.server.JCSNetS_LoginServer;
+import com.aldes.jcsnets.net.login.JCSNetS_LoginServer;
 import com.aldes.jcsnets.tools.JCSNetS_PacketCreator;
 import com.aldes.jcsnets.tools.data.input.ByteArrayByteStream;
 import com.aldes.jcsnets.tools.data.input.GenericSeekableLittleEndianAccessor;

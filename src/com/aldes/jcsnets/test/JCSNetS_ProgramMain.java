@@ -1,12 +1,13 @@
 package com.aldes.jcsnets.test;
 
 import com.aldes.jcsnets.net.JCSNetS_PacketKey;
-import com.aldes.jcsnets.net.PacketProcessor;
-import com.aldes.jcsnets.server.JCSNetS_Server;
+import com.aldes.jcsnets.net.channel.JCSNetS_ChannelServer;
+import com.aldes.jcsnets.net.login.JCSNetS_LoginServer;
 import com.aldes.jcsnets.server.ServerProperties;
+import com.aldes.jcsnets.util.JCSNetS_Logger;
 
 /**
- * $File: ProgramMain.java $
+ * $File: JCSNetS_ProgramMain.java $
  * $Date: 2017-03-27 22:09:33 $
  * $Revision: $
  * $Creator: Jen-Chieh Shen $
@@ -16,10 +17,10 @@ import com.aldes.jcsnets.server.ServerProperties;
 
 
 /**
- * @class ProgramMain
+ * @class JCSNetS_ProgramMain
  * @brief Test Program Entry.
  */
-public class ProgramMain {
+public class JCSNetS_ProgramMain {
     private static String GAME_NAME = "JCSNetS";
     private static String SERVER_VERSION = "1.0.0";
     private static String HOST_INC = "JayCeS";
@@ -33,18 +34,20 @@ public class ProgramMain {
         System.out.println(GAME_NAME + " " + SERVER_VERSION + " - " + HOST_INC);
         
         if (Boolean.parseBoolean(ServerProperties.getProperty("jcs.Admin"))) {
-            System.out.println("Admin mode on.");
+            JCSNetS_Logger.println("Admin mode on.");
         }
         
         JCSNetS_PacketKey.getInstance();
         
-        /* Run Channel Server. */
-        JCSNetS_Server channleServer = new JCSNetS_Server(PacketProcessor.Mode.CHANNELSERVER);
-        channleServer.run();
-        
         /* Run Login Server. */
-        JCSNetS_Server login = new JCSNetS_Server(PacketProcessor.Mode.LOGINSERVER);
-        login.run();
+        JCSNetS_Logger.println("[Login Server]");
+        JCSNetS_LoginServer.getInstance();
+        
+        /* Run Channel Server. */
+        JCSNetS_Logger.println("[Channel Server]");
+        JCSNetS_ChannelServer.getInstance();
+        
+        JCSNetS_Logger.println("\nDone :::\n");
     }
     
 }
