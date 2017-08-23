@@ -7,5 +7,11 @@
 # ========================================================================
 
 
+2017-08-23
+* Update multi channel configuration. (JCSNetS)
+* JCSNetS_Map implemented. (JCSNetS)
+* JCSNetS_MapFactory implemented. (JCSNetS)
+* JCSNetS_Logger implemented. (JCSNetS)
+
 2017-03-27
 * Project setup. (JCSNetS)
