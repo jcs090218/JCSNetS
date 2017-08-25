@@ -45,7 +45,7 @@ public class JCSNetS_ProgramMain {
         
         /* Run Channel Server. */
         JCSNetS_Logger.println("[Channel Server]");
-        JCSNetS_ChannelServer.getInstance();
+        JCSNetS_ChannelServer.getInstances();
         
         JCSNetS_Logger.println("\nDone :::\n");
     }

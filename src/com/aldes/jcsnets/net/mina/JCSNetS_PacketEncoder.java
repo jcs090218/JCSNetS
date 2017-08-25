@@ -76,6 +76,8 @@ public class JCSNetS_PacketEncoder implements ProtocolEncoder {
         buf.put(encrypted, 0, encrypted.length);
 
         buf.flip();
+        
+        log.info("編碼後：" + buf.toString());
         out.write(buf);
     }
 }

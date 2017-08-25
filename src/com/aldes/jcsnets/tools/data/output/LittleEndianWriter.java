@@ -34,6 +34,13 @@ public interface LittleEndianWriter {
      * @param i The integer to write.
      */
     public void writeInt(int i);
+    
+    /**
+     * Writes an float to the sequence.
+     *
+     * @param f The float to write.
+     */
+    public void writeFloat(float f);
 
     /**
      * Write a short integer to the sequence.
@@ -63,9 +70,37 @@ public interface LittleEndianWriter {
     void writeNullTerminatedAsciiString(String s);
 
     /**
-     * Writes a blackvault-convention ASCII string to the sequence.
+     * Writes a JCSNetS-convention ASCII string to the sequence.
      *
      * @param s The ASCII string to use maple-convention to write.
      */
-    void writeBlackVaultAsciiString(String s);
+    void writeJCSNetS_AsciiString(String s);
+    
+    /**
+     * Write a null-terminated Unicode string to sequence.
+     * 
+     * @param s : The Unicode string to write.
+     */
+    void writeNullTerminatedUnicodeString(String s);
+    
+    /**
+     * Write a null-terminated UTF-8 string to sequence.
+     * 
+     * @param s : The UTF-8 string to write.
+     */
+    void writeNullTerminatedUTF8String(String s);
+    
+    /**
+     * Write a null-terminated UTF-16 string to sequence.
+     * 
+     * @param s : The UTF-16 string to write.
+     */
+    void writeNullTerminatedUTF16String(String s);
+    
+    /**
+     * Write a null-terminated UTF-32 string to sequence.
+     * 
+     * @param s : The UTF-32 string to write.
+     */
+    void writeNullTerminatedUTF32String(String s);
 }

@@ -14,6 +14,9 @@ public class GenericLittleEndianWriter implements LittleEndianWriter {
     
     private static Charset ASCII = Charset.forName("BIG5");
     private ByteOutputStream bos;
+    
+    private int floatPrecise = 1000;
+    
 
     public  int  getlength(String  str){
         int  i,t=0;
@@ -104,6 +107,17 @@ public class GenericLittleEndianWriter implements LittleEndianWriter {
         bos.writeByte((byte) ((i >>> 16) & 0xFF));
         bos.writeByte((byte) ((i >>> 24) & 0xFF));
     }
+    
+    /**
+     * Writes an float to the sequence.
+     *
+     * @param i The float to write.
+     */
+    @Override
+    public void writeFloat(float f) {
+        int round = Math.round(f * floatPrecise);
+        writeInt(round);
+    }
 
     /**
      * Writes an ASCII string the the stream.
@@ -116,12 +130,12 @@ public class GenericLittleEndianWriter implements LittleEndianWriter {
     }
 
     /**
-     * Writes a maple-convention ASCII string to the stream.
+     * Writes a JCSNetS-convention ASCII string to the stream.
      *
      * @param s The ASCII string to use maple-convention to write.
      */
     @Override
-    public void writeBlackVaultAsciiString(String s) {
+    public void writeJCSNetS_AsciiString(String s) {
         writeShort((short) s.getBytes().length);
         writeAsciiString(s);
     }
@@ -134,6 +148,54 @@ public class GenericLittleEndianWriter implements LittleEndianWriter {
     @Override
     public void writeNullTerminatedAsciiString(String s) {
         writeAsciiString(s);
+        write(0);
+    }
+
+    /**
+     * Write a null-terminated Unicode string to sequence.
+     * 
+     * @param s : The Unicode string to write.
+     */
+    @Override
+    public void writeNullTerminatedUnicodeString(String s) {
+        byte[] data = s.getBytes(Charset.forName("Unicode"));
+        write(data);
+        write(0);
+    }
+
+    /**
+     * Write a null-terminated UTF-8 string to sequence.
+     * 
+     * @param s : The UTF-8 string to write.
+     */
+    @Override
+    public void writeNullTerminatedUTF8String(String s) {
+        byte[] data = s.getBytes(Charset.forName("UTF-8"));
+        write(data);
+        write(0);
+    }
+
+    /**
+     * Write a null-terminated UTF-16 string to sequence.
+     * 
+     * @param s : The UTF-16 string to write.
+     */
+    @Override
+    public void writeNullTerminatedUTF16String(String s) {
+        byte[] data = s.getBytes(Charset.forName("UTF-16"));
+        write(data);
+        write(0);
+    }
+
+    /**
+     * Write a null-terminated UTF-32 string to sequence.
+     * 
+     * @param s : The UTF-32 string to write.
+     */
+    @Override
+    public void writeNullTerminatedUTF32String(String s) {
+        byte[] data = s.getBytes(Charset.forName("UTF-32"));
+        write(data);
         write(0);
     }
 
@@ -165,5 +227,9 @@ public class GenericLittleEndianWriter implements LittleEndianWriter {
 
     public void skip(int b) {
         write(new byte[b]);
+    }
+    
+    public void setFloatPrecise(int fp) {
+        this.floatPrecise = fp;
     }
 }

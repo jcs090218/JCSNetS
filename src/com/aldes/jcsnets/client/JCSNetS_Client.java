@@ -27,10 +27,12 @@ public class JCSNetS_Client {
     private static final Logger log = LoggerFactory.getLogger(JCSNetS_Client.class);
     private IoSession session;
 
-    private JCSNetS_Character player = new JCSNetS_Character(this);
     private long lastPong;
     private boolean gm = false;
     private boolean loggedIn = false;
+    
+    private JCSNetS_Character player = new JCSNetS_Character(this);
+    private int channel = 1;
     
 
     public JCSNetS_Client(IoSession session) {

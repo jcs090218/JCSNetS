@@ -20,11 +20,12 @@ import com.aldes.jcsnets.tools.Vector2f;
 public class JCSNetS_Character {
 
     private String name = new String("JCSNetS Default Player Name");
-    private int mapid;
-    private Vector2f position = new Vector2f();
-    private JCSNetS_Map map = null;
     
     private JCSNetS_Client client = null;
+    private Vector2f position = new Vector2f();
+    
+    private JCSNetS_Map map = null;
+    private int mapid = -1;
 
 
     public JCSNetS_Character(JCSNetS_Client client) {

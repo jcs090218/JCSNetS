@@ -28,14 +28,11 @@ import com.aldes.jcsnets.util.JCSNetS_Logger;
 
 public class JCSNetS_Server implements Runnable {
     
-    private static Logger log = LoggerFactory.getLogger(JCSNetS_Server.class);
+    private int channel = -1;
     
     private PacketProcessor processor = null;  // singleton
     private PacketProcessor.Mode mode = null;
-    private int channel = -1;
-    
-    // default port
-    private int port = 8585;
+    private int port = 8585;  // default port
     
     
     public JCSNetS_Server(int port, PacketProcessor.Mode mode) {
@@ -95,14 +92,23 @@ public class JCSNetS_Server implements Runnable {
     
     public void setPacketProcessorMode(PacketProcessor.Mode mode) {
         this.mode = mode;
+        this.processor = PacketProcessor.getProcessor(mode);
     }
     
     public void setPort(int port) {
         this.port = port;
     }
     
+    public int getPort() {
+        return this.port;
+    }
+    
     public int getChannel() {
         return this.channel;
+    }
+    
+    public void setChannel(int channel) {
+        this.channel = channel;
     }
     
 }

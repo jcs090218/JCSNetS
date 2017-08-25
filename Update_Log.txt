@@ -7,6 +7,9 @@
 # ========================================================================
 
 
+2017-08-25
+* Add float precisision check for Binary Writer. (JCSNetS)
+
 2017-08-23
 * Update multi channel configuration. (JCSNetS)
 * JCSNetS_Map implemented. (JCSNetS)

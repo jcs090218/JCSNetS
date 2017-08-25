@@ -1,9 +1,8 @@
 package com.aldes.jcsnets.net.channel;
 
 import java.util.ArrayList;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.aldes.jcsnets.net.PacketProcessor;
 import com.aldes.jcsnets.server.JCSNetS_Server;
@@ -27,7 +26,7 @@ import com.aldes.jcsnets.server.map.JCSNetS_MapFactory;
  */
 public class JCSNetS_ChannelServer extends JCSNetS_Server {
     
-    private static ArrayList<JCSNetS_ChannelServer> CHANNEL_SERVERS = null;
+    private static Map<Integer, JCSNetS_ChannelServer> instances = null;
     private JCSNetS_MapFactory mapFactory = null;
     
     
@@ -40,15 +39,26 @@ public class JCSNetS_ChannelServer extends JCSNetS_Server {
     }
     
     /**
-     * Get the array list of channel server.
-     * @return { ArrayList<JCSNetS_ChannelServer> } : array list of channel server. 
+     * Get the Map of channel servers.
+     * 
+     * @return { Map<Integer, JCSNetS_ChannelServer> } : array list of channel server. 
      */
-    public static ArrayList<JCSNetS_ChannelServer> getInstance() {
-        if (CHANNEL_SERVERS == null) {
-            CHANNEL_SERVERS = new ArrayList<JCSNetS_ChannelServer>();
+    public static Map<Integer, JCSNetS_ChannelServer> getInstances() {
+        if (instances == null) {
+            instances = new HashMap<Integer, JCSNetS_ChannelServer>();
             startChannel_Main();
         }
-        return CHANNEL_SERVERS;
+        return instances;
+    }
+    
+    /**
+     * Get a channel server that we have runs.
+     * 
+     * @param channel : channel id.
+     * @return { JCSNetS_ChannelServer } : channel server handle object.
+     */
+    public static JCSNetS_ChannelServer getInstance(int channel) {
+        return instances.get(channel);
     }
     
     /**
@@ -61,12 +71,14 @@ public class JCSNetS_ChannelServer extends JCSNetS_Server {
         for (int count = 0; count < channelCount; ++count) {
             JCSNetS_ChannelServer newCS = newInstance(Integer.parseInt(ServerProperties.getProperty("jcs.Port")) + count);
             newCS.run();
-            CHANNEL_SERVERS.add(newCS);
+            // here we treat port as the channel id.
+            instances.put(count + 1, newCS);
         }
     }
     
     public JCSNetS_MapFactory getMapFactory() {
         return this.mapFactory;
     }
+
 }
 
