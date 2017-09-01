@@ -1,11 +1,11 @@
 package com.aldes.jcsnets.net.channel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.aldes.jcsnets.net.PacketProcessor;
 import com.aldes.jcsnets.server.JCSNetS_Server;
+import com.aldes.jcsnets.server.ProtocolType;
 import com.aldes.jcsnets.server.ServerProperties;
 import com.aldes.jcsnets.server.map.JCSNetS_MapFactory;
 
@@ -30,23 +30,32 @@ public class JCSNetS_ChannelServer extends JCSNetS_Server {
     private JCSNetS_MapFactory mapFactory = null;
     
     
-    private JCSNetS_ChannelServer(int port) {
-        super(port, PacketProcessor.Mode.CHANNELSERVER);
+    private JCSNetS_ChannelServer(int port, ProtocolType type) {
+        super(port, PacketProcessor.Mode.CHANNELSERVER, type);
+        
+        /* Create instances for this channel. */
+        this.mapFactory = new JCSNetS_MapFactory();
     }
     
-    public static JCSNetS_ChannelServer newInstance(int port) {
-        return new JCSNetS_ChannelServer(port);
+    public static JCSNetS_ChannelServer newInstance(int port, ProtocolType type) {
+        return new JCSNetS_ChannelServer(port, type);
+    }
+    
+    public static Map<Integer, JCSNetS_ChannelServer> getInstances() {
+        // give default as TCP protocol.
+        return getInstances(ProtocolType.TCP);
     }
     
     /**
      * Get the Map of channel servers.
      * 
+     * @param { ProtocolType } type : type of the server protocol.
      * @return { Map<Integer, JCSNetS_ChannelServer> } : array list of channel server. 
      */
-    public static Map<Integer, JCSNetS_ChannelServer> getInstances() {
+    public static Map<Integer, JCSNetS_ChannelServer> getInstances(ProtocolType type) {
         if (instances == null) {
             instances = new HashMap<Integer, JCSNetS_ChannelServer>();
-            startChannel_Main();
+            startChannel_Main(type);
         }
         return instances;
     }
@@ -65,11 +74,11 @@ public class JCSNetS_ChannelServer extends JCSNetS_Server {
      * Main entry for channel server, this should only call once in 
      * 'getInstance' function.
      */
-    private static void startChannel_Main() {
+    private static void startChannel_Main(ProtocolType type) {
         int channelCount = Integer.parseInt(ServerProperties.getProperty("jcs.Count"));
         
         for (int count = 0; count < channelCount; ++count) {
-            JCSNetS_ChannelServer newCS = newInstance(Integer.parseInt(ServerProperties.getProperty("jcs.Port")) + count);
+            JCSNetS_ChannelServer newCS = newInstance(Integer.parseInt(ServerProperties.getProperty("jcs.Port")) + count, type);
             newCS.run();
             // here we treat port as the channel id.
             instances.put(count + 1, newCS);

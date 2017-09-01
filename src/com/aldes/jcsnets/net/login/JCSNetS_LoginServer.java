@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.aldes.jcsnets.client.JCSNetS_Client;
 import com.aldes.jcsnets.net.PacketProcessor;
 import com.aldes.jcsnets.server.JCSNetS_Server;
+import com.aldes.jcsnets.server.ProtocolType;
 import com.aldes.jcsnets.server.ServerProperties;
 
 /**
@@ -31,13 +32,18 @@ public class JCSNetS_LoginServer extends JCSNetS_Server {
     private static ArrayList<JCSNetS_Client> clients = new ArrayList<JCSNetS_Client>();
 
 
-    private JCSNetS_LoginServer() {
-        super(Integer.parseInt(ServerProperties.getProperty("jcs.LPort")), PacketProcessor.Mode.LOGINSERVER);
+    private JCSNetS_LoginServer(ProtocolType type) {
+        super(Integer.parseInt(ServerProperties.getProperty("jcs.LPort")), PacketProcessor.Mode.LOGINSERVER, type);
     }
     
     public static JCSNetS_LoginServer getInstance() {
+        // give default as TCP protocol.
+        return getInstance(ProtocolType.TCP);
+    }
+    
+    public static JCSNetS_LoginServer getInstance(ProtocolType type) {
         if (instance == null) {
-            instance = new JCSNetS_LoginServer();
+            instance = new JCSNetS_LoginServer(type);
             instance.run();
         }
         return instance;

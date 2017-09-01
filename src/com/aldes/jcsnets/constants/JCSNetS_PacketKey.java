@@ -1,4 +1,4 @@
-package com.aldes.jcsnets.net;
+package com.aldes.jcsnets.constants;
 
 /**
  * $File: JCSNetS_PacketKey.java $

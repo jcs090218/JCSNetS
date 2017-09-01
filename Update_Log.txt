@@ -7,6 +7,12 @@
 # ========================================================================
 
 
+2017-09-01
+* Open UDP type in protocol type, so now this framework 
+ provide UDP connection. (JCSNetS)
+* JCSNetS_Server now handle the order of the UDP packet.
+ (JCSNetS)
+
 2017-08-25
 * Add float precisision check for Binary Writer. (JCSNetS)
 

@@ -8,4 +8,5 @@
 
 
 //-- General --//
-Handle Little Endianness and Big Endianness.
+* Handle Little Endianness and Big Endianness.
+* More support of the server type.

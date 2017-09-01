@@ -30,10 +30,19 @@ public class JCSNetS_Map {
         this.channel = channel;
     }
     
+    /**
+     * Broadcast message no matter what.
+     * @param packet : message/packet to broadcast.
+     */
     public void broadcastMessage(JCSNetS_Packet packet) {
         broadcastMessage(null, packet);
     }
     
+    /**
+     * Broadcast message except the source.
+     * @param source : source client.
+     * @param packet : message/packet to broadcast.
+     */
     private void broadcastMessage(JCSNetS_Character source, JCSNetS_Packet packet) {
         synchronized (characters) {
             for (JCSNetS_Character chr : characters) {

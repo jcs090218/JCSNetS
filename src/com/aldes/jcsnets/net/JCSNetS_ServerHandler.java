@@ -104,8 +104,13 @@ public class JCSNetS_ServerHandler extends IoHandlerAdapter {
         
         SeekableLittleEndianAccessor slea = new GenericSeekableLittleEndianAccessor(new ByteArrayByteStream(content));
         short packetId = slea.readShort();
-        JCSNetS_Client client = (JCSNetS_Client) session.getAttribute(JCSNetS_Client.CLIENT_KEY);
+        JCSNetS_Client client = (JCSNetS_Client)session.getAttribute(JCSNetS_Client.CLIENT_KEY);
         JCSNetS_PacketHandler packetHandler = processor.getHandler(packetId);
+        
+        /* Check if the order correct. */
+        if (isPacketOutdated(slea, client, packetId)) {
+            return;
+        }
         
         if (packetHandler != null && packetHandler.validateState(client)) {
             try {
@@ -138,6 +143,29 @@ public class JCSNetS_ServerHandler extends IoHandlerAdapter {
      */
     private void updatePlayerCache(IoSession session) {
         this.allSessions = session.getService().getManagedSessions().values();
+    }
+    
+    /**
+     * Is packet outdated by the packet number.
+     * 
+     * @param slea : binary read to read the packet number.
+     * @param client : client to check if the packet is out-dated.
+     * @param packetId : packet id use to get the packet number.
+     * @return { boolean } : true, is out-dated. false, is newest packet.
+     */
+    private boolean isPacketOutdated(SeekableLittleEndianAccessor slea, JCSNetS_Client client, short packetId) {
+        if (client.isOrderCheckServer()) {
+            long packetNumber = slea.readLong();
+            if (client.getPacketNumber(packetId) > packetNumber) {
+                // No need to do any process, because the packet has been 
+                // to late or already update by another packet.
+                return true;
+            } else {
+                // update packet number
+                client.setPacketNumber(packetId, packetNumber);
+            }
+        }
+        return false;
     }
     
 }

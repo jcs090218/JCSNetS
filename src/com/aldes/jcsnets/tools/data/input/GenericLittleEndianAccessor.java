@@ -199,6 +199,8 @@ public class GenericLittleEndianAccessor implements LittleEndianAccessor {
         String strBuf = null;
         try {
             strBuf = new String(buf, "Unicode");
+            // get ride of the null terminate character.
+            strBuf = strBuf.substring(0, strBuf.length() - 1);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -224,6 +226,8 @@ public class GenericLittleEndianAccessor implements LittleEndianAccessor {
         String strBuf = null;
         try {
             strBuf = new String(buf, "UTF-8");
+            // get ride of the null terminate character.
+            strBuf = strBuf.substring(0, strBuf.length() - 1);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -249,6 +253,8 @@ public class GenericLittleEndianAccessor implements LittleEndianAccessor {
         String strBuf = null;
         try {
             strBuf = new String(buf, "UTF-16");
+            // get ride of the null terminate character.
+            strBuf = strBuf.substring(0, strBuf.length() - 1);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -274,6 +280,8 @@ public class GenericLittleEndianAccessor implements LittleEndianAccessor {
         String strBuf = null;
         try {
             strBuf = new String(buf, "UTF-32");
+            // get ride of the null terminate character.
+            strBuf = strBuf.substring(0, strBuf.length() - 1);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

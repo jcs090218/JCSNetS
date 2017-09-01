@@ -45,4 +45,12 @@ public class JCSNetS_PacketLittleEndianWriter extends GenericLittleEndianWriter 
     public String toString() {
         return HexTool.toString(baos.toByteArray());
     }
+    
+    /**
+     * Size of the stream.
+     * @return { int } : size of the stream.
+     */
+    public long size() {
+        return this.baos.size();
+    }
 }

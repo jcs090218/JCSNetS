@@ -7,9 +7,8 @@ import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.executor.ExecutorFilter;
+import org.apache.mina.transport.socket.nio.NioDatagramAcceptor;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.aldes.jcsnets.net.JCSNetS_ServerHandler;
 import com.aldes.jcsnets.net.PacketProcessor;
@@ -28,6 +27,8 @@ import com.aldes.jcsnets.util.JCSNetS_Logger;
 
 public class JCSNetS_Server implements Runnable {
     
+    private ProtocolType protocolType = ProtocolType.TCP;
+    
     private int channel = -1;
     
     private PacketProcessor processor = null;  // singleton
@@ -35,9 +36,10 @@ public class JCSNetS_Server implements Runnable {
     private int port = 8585;  // default port
     
     
-    public JCSNetS_Server(int port, PacketProcessor.Mode mode) {
+    public JCSNetS_Server(int port, PacketProcessor.Mode mode, ProtocolType type) {
         setPacketProcessorMode(mode);
         setPort(port);
+        setProtocolType(type);
         
         if (mode == PacketProcessor.Mode.LOGINSERVER) {
             this.channel = port - Integer.parseInt(ServerProperties.getProperty("jcs.LPort")) + 1;
@@ -64,6 +66,47 @@ public class JCSNetS_Server implements Runnable {
 
     @Override
     public void run() {
+        // run server base ont the type of the protocol.
+        if (protocolType == ProtocolType.TCP) {
+            tcpRun();
+        } else if (protocolType == ProtocolType.UDP) {
+            udpRun();
+        }
+    }
+    
+    public void setPacketProcessorMode(PacketProcessor.Mode mode) {
+        this.mode = mode;
+        this.processor = PacketProcessor.getProcessor(mode);
+    }
+    
+    public void setPort(int port) {
+        this.port = port;
+    }
+    
+    public int getPort() {
+        return this.port;
+    }
+    
+    public int getChannel() {
+        return this.channel;
+    }
+    
+    public void setChannel(int channel) {
+        this.channel = channel;
+    }
+    
+    public void setProtocolType(ProtocolType type) {
+        this.protocolType = type;
+    }
+    
+    public ProtocolType getProtocolType() {
+        return this.protocolType;
+    }
+    
+    /**
+     * Program Entry for TCP server.
+     */
+    private void tcpRun() {
         IoAcceptor acceptor;
         
         try{
@@ -90,25 +133,34 @@ public class JCSNetS_Server implements Runnable {
         }
     }
     
-    public void setPacketProcessorMode(PacketProcessor.Mode mode) {
-        this.mode = mode;
-        this.processor = PacketProcessor.getProcessor(mode);
-    }
-    
-    public void setPort(int port) {
-        this.port = port;
-    }
-    
-    public int getPort() {
-        return this.port;
-    }
-    
-    public int getChannel() {
-        return this.channel;
-    }
-    
-    public void setChannel(int channel) {
-        this.channel = channel;
+    /**
+     * Program Entry for UDP server.
+     */
+    private void udpRun() {
+        IoAcceptor acceptor;
+        
+        try{
+            acceptor = new NioDatagramAcceptor();
+            
+            // 編碼/解碼器
+            acceptor.getFilterChain().addLast("codec",
+                    new ProtocolCodecFilter(new JCSNetS_CodecFactory()));
+            // 設置線程池
+            acceptor.getFilterChain().addLast("threadPool",
+                    new ExecutorFilter(Executors.newCachedThreadPool()));
+            
+            acceptor.getSessionConfig().setReadBufferSize(2024);
+            acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 60);
+            
+            acceptor.setHandler(new JCSNetS_ServerHandler(processor));
+            
+            acceptor.bind(new InetSocketAddress(port));
+            printConnectInfo(port);
+            
+        }catch(Exception e){
+            printConnectError(e);
+            e.printStackTrace();
+        }
     }
     
 }

@@ -7,7 +7,7 @@ import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aldes.jcsnets.net.JCSNetS_PacketKey;
+import com.aldes.jcsnets.constants.JCSNetS_PacketKey;
 
 /**
  * $File: JCSNetS_PacketDecoder.java $

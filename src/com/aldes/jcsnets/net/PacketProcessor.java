@@ -103,5 +103,9 @@ public class PacketProcessor {
    public Mode getMode() {
        return this.mode;
    }
+   
+   public JCSNetS_PacketHandler[] getHandlers() {
+       return this.handlers;
+   }
 
 }
