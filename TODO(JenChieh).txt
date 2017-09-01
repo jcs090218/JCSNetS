@@ -11,3 +11,4 @@
 * Handle Little Endianness and Big Endianness.
 * More support of the server type.
 * UDP packet missing handle.
+* TCP/UDP cannot communicate each other.
