@@ -67,7 +67,7 @@ public class JCSNetS_PacketCreator {
         jcslew.writeShort(0x10);
 
         // set data
-        long len = JCSNetS_LoginServer.getClients().size();
+        long len = JCSNetS_LoginServer.getUniqueClientId();
         jcslew.writeLong(len);
 
         return jcslew.getPacket();

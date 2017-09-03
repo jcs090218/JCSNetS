@@ -28,6 +28,12 @@ public interface LittleEndianAccessor {
      */
     char readChar();
     /**
+     * Reads a boolean.
+     *
+     * @return The boolean read.
+     */
+    boolean readBoolean();
+    /**
      * Reads a short integer.
      *
      * @return The short integer read.

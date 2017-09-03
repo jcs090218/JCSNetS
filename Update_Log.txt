@@ -7,6 +7,12 @@
 # ========================================================================
 
 
+2017-09-03
+* Add unique client id to login server. (JCSNetS)
+
+2017-09-02
+* Add readBoolean for binary reader. (JCSNetS)
+
 2017-09-01
 * Open UDP type in protocol type, so now this framework 
  provide UDP connection. (JCSNetS)

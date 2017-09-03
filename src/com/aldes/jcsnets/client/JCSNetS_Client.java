@@ -11,6 +11,7 @@ import com.aldes.jcsnets.net.login.JCSNetS_LoginServer;
 import com.aldes.jcsnets.server.JCSNetS_Server;
 import com.aldes.jcsnets.server.ProtocolType;
 import com.aldes.jcsnets.server.TimerManager;
+import com.aldes.jcsnets.server.map.JCSNetS_Map;
 import com.aldes.jcsnets.tools.JCSNetS_PacketCreator;
 
 /**
@@ -93,7 +94,7 @@ public class JCSNetS_Client {
                     if (lastPong - then < 0) {
                         if (getSession().isConnected()) {
                             System.out.println("Auto DC : " + session.getRemoteAddress().toString() + " : Ping Timeout.");
-                            getSession().close();
+                            getSession().close(true);
                         }
                     }
                 } catch (NullPointerException e) {
@@ -103,8 +104,13 @@ public class JCSNetS_Client {
 
     }
 
+    /**
+     * Do all the disconnect task
+     */
     public void disconnect() {
-        // Do all the disconnect task
+        JCSNetS_Map currentMap = this.getPlayer().getMap();
+        if (currentMap != null)
+            this.getPlayer().getMap().removePlayer(this.getPlayer());
     }
 
     public JCSNetS_Character getPlayer() {

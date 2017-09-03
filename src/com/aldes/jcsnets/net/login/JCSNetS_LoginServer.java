@@ -7,6 +7,7 @@ import com.aldes.jcsnets.net.PacketProcessor;
 import com.aldes.jcsnets.server.JCSNetS_Server;
 import com.aldes.jcsnets.server.ProtocolType;
 import com.aldes.jcsnets.server.ServerProperties;
+import com.aldes.jcsnets.util.JCSNetS_Logger;
 
 /**
  * $File: JCSNetS_LoginServer.java $
@@ -30,6 +31,9 @@ public class JCSNetS_LoginServer extends JCSNetS_Server {
 
     private static JCSNetS_LoginServer instance = null;
     private static ArrayList<JCSNetS_Client> clients = new ArrayList<JCSNetS_Client>();
+    
+    // current unique client id.
+    private static long clientId = -1L;
 
 
     private JCSNetS_LoginServer(ProtocolType type) {
@@ -64,6 +68,13 @@ public class JCSNetS_LoginServer extends JCSNetS_Server {
 
     public static ArrayList<JCSNetS_Client> getClients() {
         return clients;
+    }
+    
+    public static long getUniqueClientId() {
+        if (clientId >= Long.MAX_VALUE) {
+            JCSNetS_Logger.println("Unique ID of range : " + clientId);
+        }
+        return ++clientId;
     }
 
 }

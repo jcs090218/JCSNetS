@@ -40,6 +40,16 @@ public class GenericLittleEndianAccessor implements LittleEndianAccessor {
     public byte readByte() {
         return (byte) bs.readByte();
     }
+    
+    /**
+     * Reads a boolean.
+     *
+     * @return The boolean read.
+     */
+    @Override
+    public boolean readBoolean() {
+        return (readByte() != 0);
+    }
 
     /**
      * Reads an integer from the stream.

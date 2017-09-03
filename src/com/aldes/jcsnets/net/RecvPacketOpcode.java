@@ -16,7 +16,8 @@ import com.aldes.jcsnets.handling.WritableIntValueHolder;
  */
 public enum RecvPacketOpcode implements WritableIntValueHolder {
     // GENERIC
-    PONG, 
+    PONG,
+    MAX_PACKET,
     
     // LOGIN
     REGISTER_LOGIN,
