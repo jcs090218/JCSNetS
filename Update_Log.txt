@@ -7,6 +7,9 @@
 # ========================================================================
 
 
+2017-09-05
+* Start login worker implementation. (JCSNetS)
+
 2017-09-03
 * Add unique client id to login server. (JCSNetS)
 
