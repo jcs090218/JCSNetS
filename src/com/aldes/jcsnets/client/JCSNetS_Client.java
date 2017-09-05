@@ -1,10 +1,15 @@
 package com.aldes.jcsnets.client;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aldes.jcsnets.constants.JCSNetS_Constants;
+import com.aldes.jcsnets.database.DatabaseConnection;
 import com.aldes.jcsnets.net.PacketProcessor;
 import com.aldes.jcsnets.net.channel.JCSNetS_ChannelServer;
 import com.aldes.jcsnets.net.login.JCSNetS_LoginServer;
@@ -29,20 +34,25 @@ import com.aldes.jcsnets.tools.JCSNetS_PacketCreator;
  * @brief
  */
 public class JCSNetS_Client {
-
+    public static final int LOGIN_NOTLOGGEDIN = 0;
+    public static final int LOGIN_SERVER_TRANSITION = 1;
+    public static final int LOGIN_LOGGEDIN = 2;
+    public static final int LOGIN_WAITING = 3;
     public static final String CLIENT_KEY = "CLIENT";
     private static final Logger log = LoggerFactory.getLogger(JCSNetS_Client.class);
     private IoSession session;
 
+    private String accountName = "";
+    private String accountPass = "";
+    
     private long lastPong;
     private boolean gm = false;
     private boolean loggedIn = false;
+    private boolean serverTransition = false;
     
     private JCSNetS_Character player = new JCSNetS_Character(this);
-    private int channel = 1;
-    
-    private JCSNetS_LoginServer loginServer = null;
-    private JCSNetS_ChannelServer channelServer = null;
+    private int channel = -1;
+    private int accountId = 1;
     
     // this is for UDP packet No. check.
     // store all packet number by packet id.
@@ -51,9 +61,6 @@ public class JCSNetS_Client {
 
     public JCSNetS_Client(IoSession session) {
         this.session = session;
-        
-        this.loginServer = JCSNetS_LoginServer.getInstance();
-        this.channelServer = JCSNetS_ChannelServer.getInstance(this.channel);
     }
 
     public void setSession(IoSession session) {
@@ -76,7 +83,7 @@ public class JCSNetS_Client {
         this.loggedIn = loggedIn;
         
         if (this.isLoggedIn() != loggedIn) {
-            // if not the same val then, meaning the whole packet switch
+            // if not the same value then, meaning the whole packet switch
             // to the new packet processor.
             this.loggedIn = loggedIn;
             resetPacketNumbers(getPacketProcessor().getHandlers().length);
@@ -119,9 +126,9 @@ public class JCSNetS_Client {
     
     public JCSNetS_Server getCurrentServer() {
         if (isLoggedIn()) {
-            return getChannelServer();
+            return this.getChannelServer();
         }
-        return getLoginServer();
+        return JCSNetS_LoginServer.getInstance();
     }
     
     /**
@@ -144,12 +151,16 @@ public class JCSNetS_Client {
         return PacketProcessor.getProcessor(PacketProcessor.Mode.LOGINSERVER);
     }
     
-    public JCSNetS_LoginServer getLoginServer() {
-        return this.loginServer;
+    public void setChannel(int channel) {
+        this.channel = channel;
+    }
+    
+    public int getChannel() {
+        return this.channel;
     }
     
     public JCSNetS_ChannelServer getChannelServer() {
-        return this.channelServer;
+        return JCSNetS_ChannelServer.getInstance(this.getChannel());
     }
     
     /**
@@ -184,8 +195,61 @@ public class JCSNetS_Client {
         }
     }
     
+    /**
+     * Update login state to database.
+     * 
+     * @param newstate : new login state to be update.
+     */
+    public void updateLoginState(int newstate) {
+        Connection con = DatabaseConnection.getConnection();
+        try {
+            PreparedStatement ps = con
+                    .prepareStatement("UPDATE accounts SET loggedin = ?, lastlogin = CURRENT_TIMESTAMP() WHERE id = ?");
+            ps.setInt(1, newstate);
+            ps.setInt(2, getAccountId());
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            log.error("ERROR", e);
+        }
+        if (newstate == LOGIN_NOTLOGGEDIN) {
+            loggedIn = false;
+            serverTransition = false;
+        } else if (newstate == LOGIN_WAITING) {
+            loggedIn = false;
+            serverTransition = false;
+        } else {
+            serverTransition = (newstate == LOGIN_SERVER_TRANSITION);
+            loggedIn = !serverTransition;
+        }
+    }
+    
+    public void setAccountId(int id) {
+        this.accountId = id;
+    }
+    
+    public int getAccountId() {
+        return this.accountId;
+    }
+    
     public long getPacketNumber(short packetId) {
         return this.packetNumbers[packetId];
+    }
+    
+    public String getAccountName() {
+        return this.accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
+    public String getAccountPass() {
+        return accountPass;
+    }
+
+    public void setAccountPass(String pass) {
+        this.accountPass = pass;
     }
     
 }

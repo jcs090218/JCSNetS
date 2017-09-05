@@ -72,8 +72,6 @@ public class JCSNetS_ServerHandler extends IoHandlerAdapter {
         JCSNetS_Client client = new JCSNetS_Client(session);
         session.setAttribute(JCSNetS_Client.CLIENT_KEY, client);
         
-        JCSNetS_LoginServer.getInstance().resgister(client);
-        
         updatePlayerCache(session);
         
         JCSNetS_Packet buffer = JCSNetS_PacketCreator.getHello();
@@ -86,8 +84,6 @@ public class JCSNetS_ServerHandler extends IoHandlerAdapter {
             JCSNetS_Client client = (JCSNetS_Client) session.getAttribute(JCSNetS_Client.CLIENT_KEY);
             if (client != null) {
                 client.disconnect();
-                // remove the client from server
-                JCSNetS_LoginServer.getInstance().deresgister(client);
                 session.removeAttribute(JCSNetS_Client.CLIENT_KEY);
             }
         }

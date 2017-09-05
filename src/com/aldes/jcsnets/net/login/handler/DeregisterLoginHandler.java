@@ -23,9 +23,8 @@ import com.aldes.jcsnets.tools.data.input.SeekableLittleEndianAccessor;
 public class DeregisterLoginHandler extends AbstractJCSNetS_PacketHandler {
 
     @Override
-    public void handlePacket(SeekableLittleEndianAccessor slea,
-                             JCSNetS_Client c) {
-        JCSNetS_LoginServer.getInstance().deresgister(c);
+    public void handlePacket(SeekableLittleEndianAccessor slea, JCSNetS_Client client) {
+        JCSNetS_LoginServer.getInstance().deresgister(client);
     }
 
 }

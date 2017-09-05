@@ -5,11 +5,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
+/**
+ * $File: ServerProperties.java $
+ * $Date: 2017-09-05 12:59:27 $
+ * $Revision: $
+ * $Creator: Jen-Chieh Shen $
+ * $Notice: See LICENSE.txt for modification and distribution information 
+ *                   Copyright (c) 2017 by Shen, Jen-Chieh $
+ */
+
+
 public class ServerProperties {
     private static final Properties props = new Properties();
 
     private static final String[] toLoad = {
-        "Settings.ini"
+        "Settings.ini",
+        "World.ini",
     };
     
     private ServerProperties() {

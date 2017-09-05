@@ -1,8 +1,5 @@
 package com.aldes.jcsnets.net.login.handler;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.aldes.jcsnets.client.JCSNetS_Client;
 import com.aldes.jcsnets.net.AbstractJCSNetS_PacketHandler;
 import com.aldes.jcsnets.net.login.JCSNetS_LoginServer;
@@ -26,13 +23,8 @@ import com.aldes.jcsnets.tools.data.input.SeekableLittleEndianAccessor;
  */
 public class RegisterLoginHandler extends AbstractJCSNetS_PacketHandler {
 
-    private static Logger log = LoggerFactory.getLogger(AbstractJCSNetS_PacketHandler.class);
-
     @Override
-    public void handlePacket(
-            SeekableLittleEndianAccessor slea,
-            JCSNetS_Client c) {
-
-        JCSNetS_LoginServer.getInstance().resgister(c);
+    public void handlePacket(SeekableLittleEndianAccessor slea, JCSNetS_Client client) {
+        JCSNetS_LoginServer.getInstance().resgister(client);
     }
 }

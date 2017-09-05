@@ -8,6 +8,16 @@ import java.util.LinkedList;
 
 import com.aldes.jcsnets.server.ServerProperties;
 
+/**
+ * $File: DatabaseConnection.java $
+ * $Date: 2017-09-05 13:13:11 $
+ * $Revision: $
+ * $Creator: Jen-Chieh Shen $
+ * $Notice: See LICENSE.txt for modification and distribution information 
+ *                   Copyright (c) 2017 by Shen, Jen-Chieh $
+ */
+
+
 public class DatabaseConnection {
     private static final ThreadLocal<Connection> con = new ThreadLocalConnection();
     public static final int CLOSE_CURRENT_RESULT = 1;

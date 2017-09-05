@@ -3,6 +3,7 @@ package com.aldes.jcsnets.net.channel;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.aldes.jcsnets.client.JCSNetS_Character;
 import com.aldes.jcsnets.net.PacketProcessor;
 import com.aldes.jcsnets.server.JCSNetS_Server;
 import com.aldes.jcsnets.server.ProtocolType;
@@ -28,17 +29,20 @@ public class JCSNetS_ChannelServer extends JCSNetS_Server {
     
     private static Map<Integer, JCSNetS_ChannelServer> instances = null;
     private JCSNetS_MapFactory mapFactory = null;
+    private JCSNetS_PlayerStorage players = new JCSNetS_PlayerStorage();
     
     
-    private JCSNetS_ChannelServer(int port, ProtocolType type) {
+    private JCSNetS_ChannelServer(int port, ProtocolType type, int channel) {
         super(port, PacketProcessor.Mode.CHANNELSERVER, type);
+        
+        setChannel(channel);
         
         /* Create instances for this channel. */
         this.mapFactory = new JCSNetS_MapFactory();
     }
     
-    public static JCSNetS_ChannelServer newInstance(int port, ProtocolType type) {
-        return new JCSNetS_ChannelServer(port, type);
+    public static JCSNetS_ChannelServer newInstance(int port, ProtocolType type, int channel) {
+        return new JCSNetS_ChannelServer(port, type, channel);
     }
     
     public static Map<Integer, JCSNetS_ChannelServer> getInstances() {
@@ -78,15 +82,36 @@ public class JCSNetS_ChannelServer extends JCSNetS_Server {
         int channelCount = Integer.parseInt(ServerProperties.getProperty("jcs.Count"));
         
         for (int count = 0; count < channelCount; ++count) {
-            JCSNetS_ChannelServer newCS = newInstance(Integer.parseInt(ServerProperties.getProperty("jcs.Port")) + count, type);
+            int channel = count + 1;
+            
+            JCSNetS_ChannelServer newCS = newInstance(
+                    Integer.parseInt(ServerProperties.getProperty("jcs.Port")) + count, 
+                    type, 
+                    channel);
             newCS.run();
             // here we treat port as the channel id.
-            instances.put(count + 1, newCS);
+            instances.put(channel, newCS);
         }
     }
     
     public JCSNetS_MapFactory getMapFactory() {
         return this.mapFactory;
+    }
+    
+    public IPlayerStorage getPlayerStorage() {
+        return this.players;
+    }
+    
+    public void addPlayer(JCSNetS_Character chr) {
+        this.players.registerPlayer(chr);
+    }
+    
+    public void removePlayer(JCSNetS_Character chr) {
+        players.deregisterPlayer(chr);
+    }
+    
+    public int getConnectedClients() {
+        return players.getAllCharacters().size();
     }
 
 }

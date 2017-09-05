@@ -19,6 +19,7 @@ import com.aldes.jcsnets.tools.Vector2f;
  */
 public class JCSNetS_Character {
 
+    private int id = -1;
     private String name = new String("JCSNetS Default Player Name");
     
     private JCSNetS_Client client = null;
@@ -30,6 +31,14 @@ public class JCSNetS_Character {
 
     public JCSNetS_Character(JCSNetS_Client client) {
         this.client = client;
+    }
+    
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    public int getId() {
+        return this.id;
     }
 
     public JCSNetS_Map getMap() {

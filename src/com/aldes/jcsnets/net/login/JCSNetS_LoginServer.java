@@ -1,8 +1,12 @@
 package com.aldes.jcsnets.net.login;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import com.aldes.jcsnets.client.JCSNetS_Client;
+import com.aldes.jcsnets.database.DatabaseConnection;
 import com.aldes.jcsnets.net.PacketProcessor;
 import com.aldes.jcsnets.server.JCSNetS_Server;
 import com.aldes.jcsnets.server.ProtocolType;
@@ -34,6 +38,9 @@ public class JCSNetS_LoginServer extends JCSNetS_Server {
     
     // current unique client id.
     private static long clientId = -1L;
+    
+    private int loginInterval = Integer.parseInt(ServerProperties.getProperty("jcs.LoginInterval"));
+    private int userLimit = Integer.parseInt(ServerProperties.getProperty("jcs.UserLimit"));
 
 
     private JCSNetS_LoginServer(ProtocolType type) {
@@ -54,6 +61,8 @@ public class JCSNetS_LoginServer extends JCSNetS_Server {
     }
 
     public void resgister(JCSNetS_Client client) {
+        if (clients.contains(client))
+            return;
         clients.add(client);
     }
 
@@ -75,6 +84,34 @@ public class JCSNetS_LoginServer extends JCSNetS_Server {
             JCSNetS_Logger.println("Unique ID of range : " + clientId);
         }
         return ++clientId;
+    }
+    
+    public int getLoginInterval() {
+        return this.loginInterval;
+    }
+    
+    public int getPossibleLogins() {
+        int ret = 0;
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            PreparedStatement limitCheck = con.prepareStatement("SELECT COUNT(*) FROM accounts WHERE loggedin > 1 AND gm = 0");
+            ResultSet rs = limitCheck.executeQuery();
+            if (rs.next()) {
+                int usersOn = rs.getInt(1);
+                if (usersOn < userLimit) {
+                    ret = userLimit - usersOn;
+                }
+            }
+            rs.close();
+            limitCheck.close();
+        } catch (Exception ex) {
+            System.out.println("loginlimit error" + ex);
+        }
+        return ret;
+    }
+    
+    public void reconnectWorld() {
+        
     }
 
 }

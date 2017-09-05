@@ -27,13 +27,13 @@ import com.aldes.jcsnets.util.JCSNetS_Logger;
 
 public class JCSNetS_Server implements Runnable {
     
-    private ProtocolType protocolType = ProtocolType.TCP;
+    protected ProtocolType protocolType = ProtocolType.TCP;
     
-    private int channel = -1;
+    protected int channel = -1;
     
-    private PacketProcessor processor = null;  // singleton
-    private PacketProcessor.Mode mode = null;
-    private int port = 8585;  // default port
+    protected PacketProcessor processor = null;  // singleton
+    protected PacketProcessor.Mode mode = null;
+    protected int port = 8585;  // default port
     
     
     public JCSNetS_Server(int port, PacketProcessor.Mode mode, ProtocolType type) {
