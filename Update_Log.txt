@@ -7,6 +7,9 @@
 # ========================================================================
 
 
+2017-09-06
+* Add SQL file to test database module. (JCSNetS)
+
 2017-09-05
 * Start login worker implementation. (JCSNetS)
 
