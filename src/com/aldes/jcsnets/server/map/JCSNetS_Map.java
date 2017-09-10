@@ -60,6 +60,14 @@ public class JCSNetS_Map {
     public void setMapid(int mapid) {
         this.mapid = mapid;
     }
+    
+    public int getChannel() {
+        return this.channel;
+    }
+    
+    public void setChannel(int channel) {
+        this.channel = channel;
+    }
 
     public void setMapName(String mapName) {
         this.mapName = mapName;
