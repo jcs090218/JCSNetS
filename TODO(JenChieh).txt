@@ -11,3 +11,4 @@
 * Handle Little Endianness and Big Endianness.
 * More support of the server type.
 * TCP/UDP cannot communicate each other.
+* When read packet add length to decode/encode standards.
