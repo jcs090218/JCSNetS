@@ -14,3 +14,7 @@ GTAGS*
 
 # error log
 *.log
+
+# ignore log and todos.
+TODO(jenchieh).txt
+Update_Log.txt
